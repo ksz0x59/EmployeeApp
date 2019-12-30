@@ -1,33 +1,32 @@
 package com.ksz.example.EmployeeApp;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    List<String> emps = new CopyOnWriteArrayList<>();
+    EmployeeService employeeService = new EmployeeService();
 
+    @RequestMapping(value = "/employees",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<Employee> getEmployees()
     {
-        emps.addAll(Arrays.asList("Mietek", "Staszek", "Marek"));
+        return employeeService.getEmployees();
     }
 
-    @RequestMapping(value = "/employees", method = RequestMethod.GET)
-    public List<String> getEmployees()
+    @RequestMapping(value = "/employees",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Employee addEmployee(@RequestBody NewEmployee employee)
     {
-        return emps;
-    }
-
-    @RequestMapping(value = "/employees", method = RequestMethod.GET)
-    public int addEmployee(@RequestBody String name)
-    {
-        emps.add(name);
-        return emps.size();
+        return this.employeeService.addEmployee(employee);
     }
 
 }
