@@ -1,25 +1,33 @@
 package com.ksz.example.EmployeeApp;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import com.ksz.example.EmployeeApp.db.EmployeeRepository;
+import com.ksz.example.EmployeeApp.db.EmployeeRow;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class EmployeeService {
 
-    List<Employee> employees = new CopyOnWriteArrayList<>();
+    private final EmployeeRepository employeeRepository;
 
-    public List<Employee> getEmployees()
-    {
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    public List<Employee> getEmployees() {
+        List<Employee> employees = new ArrayList<>();
+        employeeRepository.findAll().forEach(employeeRow ->
+            employees.add(employeeRow.toEmployee())
+        );
         return employees;
     }
 
     public Employee addEmployee (NewEmployee employee)
     {
-        // ugly because not thread safe !
-        Employee createdEmployee = new Employee(employees.size() + 1, employee.empname,
-                employee.jobTitle, employee.hiredate, employee.salary);
-
-        employees.add(createdEmployee);
-
-        return createdEmployee;
+        EmployeeRow employeeRow = employeeRepository.save(
+                new EmployeeRow(employee.empname,  employee.jobTitle, employee.hiredate, employee.salary));
+        return employeeRow.toEmployee();
     }
 }

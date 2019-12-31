@@ -1,6 +1,15 @@
 package com.ksz.example.EmployeeApp;
 
+import com.ksz.example.EmployeeApp.db.EmployeeRepository;
+import javafx.application.Application;
+import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,12 +17,23 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class EmployeeServiceTest {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @AfterEach
+    public void cleanAfterTest()
+    {
+        employeeRepository.deleteAll();
+    }
 
     @Test
     public void newServiceShouldReturnEmptyList ()
     {
-        EmployeeService employeeService = new EmployeeService();
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
         List<Employee> employees = employeeService.getEmployees();
         assertTrue(employees.isEmpty());
     }
@@ -21,7 +41,7 @@ class EmployeeServiceTest {
     @Test
     public void addEmployeeShouldAddNotNullEmployeeToList()
     {
-        EmployeeService employeeService = new EmployeeService();
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
         Employee employee = employeeService
                 .addEmployee(new NewEmployee("Blake","Manager",
                         LocalDate.of(1981, 11, 21), new BigDecimal(5000)));
@@ -31,7 +51,7 @@ class EmployeeServiceTest {
     @Test
     public void addEmployeeShouldAddEmployeeToList()
     {
-        EmployeeService employeeService = new EmployeeService();
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
         Employee employee = employeeService
                 .addEmployee(new NewEmployee("Blake","Manager",
                         LocalDate.of(1981, 11, 21), new BigDecimal(5000)));
@@ -41,7 +61,7 @@ class EmployeeServiceTest {
     @Test
     public void addedEmployeeHasNewId()
     {
-        EmployeeService employeeService = new EmployeeService();
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
 
         Employee employee1 = employeeService
                 .addEmployee(new NewEmployee("Blake","Manager",

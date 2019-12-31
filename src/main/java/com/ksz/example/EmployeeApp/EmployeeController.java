@@ -9,7 +9,11 @@ import java.util.List;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    EmployeeService employeeService = new EmployeeService();
+    EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @RequestMapping(value = "/employees",
             method = RequestMethod.GET,
