@@ -1,10 +1,7 @@
 package com.ksz.example.EmployeeApp;
 
 import com.ksz.example.EmployeeApp.db.EmployeeRepository;
-import javafx.application.Application;
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +36,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    public void addEmployeeShouldAddNotNullEmployeeToList()
+    public void addEmployeeShouldAddNotNullEmployee()
     {
         EmployeeService employeeService = new EmployeeService(employeeRepository);
         Employee employee = employeeService
@@ -49,7 +46,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    public void addEmployeeShouldAddEmployeeToList()
+    public void addEmployeeShouldAddEmployee()
     {
         EmployeeService employeeService = new EmployeeService(employeeRepository);
         Employee employee = employeeService
@@ -74,4 +71,20 @@ class EmployeeServiceTest {
         assertNotEquals(employee1.empid, employee2.empid);
 
     }
+
+    @Test
+    public void forNewlyAddedEmployeeShouldBeAbleToChangeSalary()
+    {
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
+
+        Employee employee = employeeService
+                .addEmployee(new NewEmployee("Blake","Manager",
+                        LocalDate.of(1981, 11, 21), new BigDecimal(5000)));
+
+        Employee employee2 = employeeService.setSalary(employee.empid, new BigDecimal(7000)).get();
+
+        assertEquals(new BigDecimal(7000), employee2.salary);
+
+    }
+
 }

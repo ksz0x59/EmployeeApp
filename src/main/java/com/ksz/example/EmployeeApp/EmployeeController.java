@@ -3,6 +3,7 @@ package com.ksz.example.EmployeeApp;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -31,6 +32,17 @@ public class EmployeeController {
     public Employee addEmployee(@RequestBody NewEmployee employee)
     {
         return this.employeeService.addEmployee(employee);
+    }
+
+    @RequestMapping(value = "/employees/{id}/salary/{salary}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+
+    public Employee setSalary(@PathVariable("id") long id, @PathVariable("salary") BigDecimal salary)
+    {
+        return this.employeeService.setSalary(id,salary).orElseThrow(
+                () -> new IllegalArgumentException("Employee of id " + id + " does not exist")
+        );
     }
 
 }
