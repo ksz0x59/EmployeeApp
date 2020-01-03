@@ -41,7 +41,7 @@ public class EmployeeController {
     public Employee setSalary(@PathVariable("id") long id, @PathVariable("salary") BigDecimal salary)
     {
         return this.employeeService.setSalary(id,salary).orElseThrow(
-                () -> new IllegalArgumentException("Employee of id " + id + " does not exist")
+                () -> new NoEmployeeException(id)
         );
     }
 
